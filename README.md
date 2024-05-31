@@ -12,4 +12,4 @@
 - `深渊海域`的坐标有极低概率会被浪费，遇到了就当倒霉吧 (逃
 
 ## Discord
-https://discord.gg/2NuruGzKkK
+https://discord.gg/2NuruGzKkK"# azur" 
