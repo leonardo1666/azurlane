@@ -3,9 +3,16 @@ from module.daemon.daemon_base import DaemonBase
 from module.exception import CampaignEnd
 from module.handler.ambush import MAP_AMBUSH_EVADE
 from module.map.map_operation import FLEET_PREPARATION, MAP_PREPARATION
+from module.equipment.equipment_old import EquipmentOld
 
 
 class AzurLaneDaemon(DaemonBase, CampaignBase):
+    def __init__(self, config, task):
+        super().__init__()  # Make sure to call parent class initializer
+        self.config = config
+        self.task = task
+        self.equipment_old = EquipmentOld()
+
     def run(self):
         while 1:
             self.device.screenshot()
@@ -58,6 +65,11 @@ class AzurLaneDaemon(DaemonBase, CampaignBase):
             # Story
             if self.story_skip():
                 continue
+
+            # Accessing EquipmentOld methods:
+            if self.equipment_old.equip_side_navbar_ensure():
+                # Do something
+                pass
 
             # End
             # No end condition, stop it manually.
