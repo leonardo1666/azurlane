@@ -15,6 +15,7 @@ from module.logger import logger
 from module.notify import handle_notify
 from module.gg_handler.gg_handler import GGHandler
 
+g_current_task: str = ""
 
 class AzurLaneAutoScript:
     stop_event: threading.Event = None
@@ -79,6 +80,10 @@ class AzurLaneAutoScript:
             self.__getattribute__(command)()
             if command != "restart" and self.GameRestartBecauseErrorTimes != 0:
                 self.GameRestartBecauseErrorTimes = 0
+            return True
+        except RequireRestartGame:
+            self.config.task_call('Restart')
+            self.device.sleep(10)
             return True
         except TaskEnd:
             return True
@@ -452,6 +457,26 @@ class AzurLaneAutoScript:
         from module.campaign.gems_farming import GemsFarming
         GemsFarming(config=self.config, device=self.device).run(
             name=self.config.Campaign_Name, folder=self.config.Campaign_Event, mode=self.config.Campaign_Mode)
+   
+    def daemon(self):
+        from module.daemon.daemon import AzurLaneDaemon
+        AzurLaneDaemon(config=self.config, device=self.device, task="Daemon").run()
+
+    def opsi_daemon(self):
+        from module.daemon.os_daemon import AzurLaneDaemon
+        AzurLaneDaemon(config=self.config, device=self.device, task="OpsiDaemon").run()
+
+    def azur_lane_uncensored(self):
+        from module.daemon.uncensored import AzurLaneUncensored
+        AzurLaneUncensored(config=self.config, device=self.device, task="AzurLaneUncensored").run()
+
+    def benchmark(self):
+        from module.daemon.benchmark import run_benchmark
+        run_benchmark(config=self.config)
+
+    def game_manager(self):
+        from module.daemon.game_manager import GameManager
+        GameManager(config=self.config, device=self.device, task="GameManager").run()
 
     def wait_until(self, future):
         """
@@ -572,6 +597,9 @@ class AzurLaneAutoScript:
             task = self.get_next_task()
             # Init device and change server
             _ = self.device
+
+            global g_current_task
+            g_current_task = task
 
             # Skip first restart
             if task == 'Restart':

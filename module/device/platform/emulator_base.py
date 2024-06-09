@@ -114,7 +114,14 @@ class EmulatorInstanceBase:
 
         return None
 
+    @cached_property
+    def LDPlayer_id(self):
+        res = re.search(r'leidian(\d+)', self.name)
+        if res:
+            return int(res.group(1))
 
+        return None
+    
 class EmulatorBase:
     # Values here must match those in argument.yaml EmulatorInfo.Emulator.option
     NoxPlayer = 'NoxPlayer'

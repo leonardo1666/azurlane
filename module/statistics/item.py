@@ -35,7 +35,7 @@ class Item:
         """
         self.image_raw = image
         self._button = button
-        image = crop(image, button.area)
+        image = crop(image, button.area, copy=False)
         if image.shape == self.IMAGE_SHAPE:
             self.image = image
         else:
